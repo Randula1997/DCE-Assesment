@@ -62,6 +62,39 @@ namespace Assignment.Repositories
             return products;
         }
 
+        public async Task<IEnumerable<Product>> SearchProductsAsync(string keyword)
+        {
+            var products = new List<Product>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                const string sql = "SELECT * FROM Product WHERE ProductName LIKE @Keyword ";
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@Keyword", "%" + keyword + "%");
+
+                    connection.Open();
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            products.Add(new Product
+                            {
+                                ProductId = (Guid)reader["ProductId"],
+                                ProductName = reader["ProductName"].ToString(),
+                                UnitPrice = (decimal)reader["UnitPrice"],
+                                SupplierId = (Guid)reader["SupplierId"],
+                                CreatedOn = (DateTime)reader["CreatedOn"],
+                                IsActive = (bool)reader["IsActive"],
+                            });
+                        }
+                    }
+                }
+                }
+
+            return products;
+        }
+
         public async Task<Product> GetProductByIdAsync(Guid productId)
         {
             using (var connection = new SqlConnection(_connectionString))

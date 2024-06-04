@@ -9,5 +9,6 @@ namespace Assignment.Repositories
         Task<Product> GetProductByIdAsync(Guid productId);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(Guid productId);
+        Task<IEnumerable<Product>> SearchProductsAsync(string keyword);
     }
 }

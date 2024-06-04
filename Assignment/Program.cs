@@ -32,6 +32,8 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
+builder.Services.AddScoped<IGlobalSearchService, GlobalSearchService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

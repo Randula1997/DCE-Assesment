@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Assignment.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Assignment.Repositories
 {
@@ -66,6 +67,38 @@ namespace Assignment.Repositories
                 }
             }
 
+            return customers;
+        }
+
+        public async Task<IEnumerable<Customer>> SearchCustomerAsync(string keyword)
+        {
+            var customers = new List<Customer>();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                var sql = "SELECT * FROM Customer WHERE FirstName LIKE @Keyword ";
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@Keyword", "%" + keyword + "%");
+                    connection.Open();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            customers.Add(new Customer
+                            {
+                                UserId = (Guid)reader["UserId"],
+                                Username = reader["Username"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                FirstName = reader["FirstName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                CreatedOn = (DateTime)reader["CreatedOn"],
+                                IsActive = (bool)reader["IsActive"]
+                            });
+                        }
+                    }
+                }
+            }
             return customers;
         }
 

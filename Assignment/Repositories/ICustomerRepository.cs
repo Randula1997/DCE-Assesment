@@ -13,5 +13,6 @@ namespace Assignment.Repositories
         Task DeleteCustomerAsync(Guid customerId);
 
         Task<bool> CustomerExists(string email, string username);
+        Task<IEnumerable<Customer>> SearchCustomerAsync(string keyword);
     }
 }
